@@ -1,0 +1,30 @@
+---
+- hosts: test
+  remote_user: root
+  become: true
+  tasks:
+  - name: install python for centos
+    yum:
+      name: "{{ item }}"
+      state: installed
+    with_items:
+      - python-devel
+      - python-setuptools
+    when: ansible_distribution == 'CentOS'
+  - name: install python for ubuntu
+    apt:
+      name: "{{ item }}"
+      state: latest
+      update_cache: yes
+    with_items:
+      - libpython-dev
+      - python-setuptools
+    when: ansible_distribution == 'Ubuntu'
+  - name: install pip
+    shell: easy_install pip
+  - name: pip install flask and redis
+    pip:
+      name: "{{ item }}"
+    with_items:
+      - flask
+      - redis
